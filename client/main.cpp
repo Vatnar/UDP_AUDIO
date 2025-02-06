@@ -26,7 +26,7 @@ int __cdecl main(int argc, char **argv) {
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo* result = NULL, * ptr = NULL, hints;
-    const char* sendbuf = "this is a test";
+    const char* sendbuf = "Hello this is Peter!";
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;

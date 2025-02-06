@@ -42,7 +42,7 @@ int __cdecl main(void) {
     addrinfo *result = nullptr, hints{};
 
     int  iSendResult;
-    char recvbuf[DEFAULT_BUFLEN];
+    char recvbuf[DEFAULT_BUFLEN] = {0};
     int  recvbuflen = DEFAULT_BUFLEN;
 
     // Initialize Winsock, MAKEWORD(2,2) Specifies the version of the API.
@@ -99,12 +99,18 @@ int __cdecl main(void) {
     } // If failed to listen
 
     // Permit an incoming connection on a socket
-    ClientSocket = accept(ListenSocket, nullptr, nullptr);
+    struct sockaddr adress;
+    ClientSocket = accept(ListenSocket, &adress, nullptr);
     if (ClientSocket == INVALID_SOCKET) {
         log_message("accept failed.");
         closesocket(ListenSocket);
         WSACleanup();
         return 1;
+    }
+    printf("Code for address format of the address: %hu\n", adress.sa_family);
+    printf("Data: \n");
+    for (const char data : adress.sa_data) {
+        printf("%d\n", data);
     }
 
     // No longer need server socket since it has "reached out"
@@ -119,6 +125,8 @@ int __cdecl main(void) {
             snprintf(
                 logBuffer, sizeof(logBuffer), "Bytes received: %d", iResult);
             log_message(logBuffer);
+            printf("Received buffer: %s", recvbuf);
+
 
             // Echo the buffer back to the sender
             iSendResult = send(ClientSocket, recvbuf, iResult, 0); // https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
